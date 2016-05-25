@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "187256008724",
+    "project_id": "pfe-velo-jet"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187256008724:android:e2dd2b182835717c",
+        "android_client_info": {
+          "package_name": "com.ets.astl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187256008724-1afml4co5i2bj4mq1v4cmp210o06nfm2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ets.astl",
+            "certificate_hash": "B4948A7996E18E7C26D90B7BC389ACB395531388"
+          }
+        },
+        {
+          "client_id": "187256008724-b4bo0nk1m8rbemlhvbigiimr8jdbt55i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2O-JOlkpZXIDC9BeF63kgA3fOJ-ytDfY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
