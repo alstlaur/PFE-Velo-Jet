@@ -13,11 +13,42 @@
       },
       "oauth_client": [
         {
+          "client_id": "187256008724-b4bo0nk1m8rbemlhvbigiimr8jdbt55i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2O-JOlkpZXIDC9BeF63kgA3fOJ-ytDfY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187256008724:android:ac6881bdeaf254d7",
+        "android_client_info": {
+          "package_name": "com.ets.astl.pfe_velo_jet"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "187256008724-1afml4co5i2bj4mq1v4cmp210o06nfm2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ets.astl",
-            "certificate_hash": "B4948A7996E18E7C26D90B7BC389ACB395531388"
+            "package_name": "com.ets.astl.pfe_velo_jet",
+            "certificate_hash": "C5AF4A70167B9DBB6189174CBE0994E4FD6D326E"
           }
         },
         {
