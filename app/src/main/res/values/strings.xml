@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PFE-Velo-Jet</string>
+    <string name="app_name">Velo-Jet</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -26,4 +26,10 @@
     <string name="start_capture">Lancer</string>
     <string name="stop_capture">Arreter</string>
     <string name="save_capture">Sauvegarder</string>
+
+    <!-- Menus Strings-->
+    <string name="menu_capture">Trajet</string>
+    <string name="menu_history">Historique</string>
+    <string name="menu_generator">Générateur</string>
+    <string name="menu_logout">Déconnexion</string>
 </resources>

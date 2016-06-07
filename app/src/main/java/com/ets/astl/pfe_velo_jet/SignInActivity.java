@@ -114,6 +114,10 @@ public class SignInActivity extends AppCompatActivity implements
 
     private void temporaryAccount() {
         //Create a temp data
+
+        Intent startIntent = new Intent(this, MainActivity.class);
+        //startIntent.putExtra("user", null);
+        startActivity(startIntent);
     }
 
     @Override
