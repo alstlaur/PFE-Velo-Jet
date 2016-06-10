@@ -27,9 +27,20 @@
     <string name="stop_capture">Arreter</string>
     <string name="save_capture">Sauvegarder</string>
 
+    <!-- Buttons strings -->
+    <string name="button_generate">GENERER</string>
+    <string name="btn_save">SAUVEGARDER</string>
+
+    <!-- Hints -->
+    <string name="hint_length">Longueur (KM)</string>
+    <string name="hint_starting_address">Adresse de départ</string>
+    <string name="hint_ending_address">Adresse de fin</string>
+
     <!-- Menus Strings-->
     <string name="menu_capture">Trajet</string>
     <string name="menu_history">Historique</string>
     <string name="menu_generator">Générateur</string>
     <string name="menu_logout">Déconnexion</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_generator">GeneratorActivity</string>
 </resources>

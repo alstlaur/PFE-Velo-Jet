@@ -1,13 +1,13 @@
-package com.ets.astl.pfe_velo_jet;
+package com.ets.astl.pfe_velo_jet.activity;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ets.astl.pfe_velo_jet.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -17,19 +17,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-public class SignInActivity extends AppCompatActivity implements
+public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
 
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_login);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -67,7 +67,7 @@ public class SignInActivity extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
-            Intent startIntent = new Intent(this, MainActivity.class);
+            Intent startIntent = new Intent(this, CaptureActivity.class);
             startIntent.putExtra("user", acct);
             startActivity(startIntent);
         } else {
@@ -115,7 +115,7 @@ public class SignInActivity extends AppCompatActivity implements
     private void temporaryAccount() {
         //Create a temp data
 
-        Intent startIntent = new Intent(this, MainActivity.class);
+        Intent startIntent = new Intent(this, CaptureActivity.class);
         //startIntent.putExtra("user", null);
         startActivity(startIntent);
     }
