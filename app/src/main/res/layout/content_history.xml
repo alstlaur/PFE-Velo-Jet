@@ -12,4 +12,8 @@
     tools:context=".activity.HistoryActivity"
     tools:showIn="@layout/app_bar_history">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_container"/>
 </RelativeLayout>

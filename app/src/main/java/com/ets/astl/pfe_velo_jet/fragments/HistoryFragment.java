@@ -7,8 +7,14 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.ets.astl.pfe_velo_jet.R;
+import com.ets.astl.pfe_velo_jet.adapter.PathAdapter;
+import com.ets.astl.pfe_velo_jet.entity.Path;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,7 +71,22 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false);
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        Path paths[] = new Path[] {
+                new Path("Chemin Best Buy", 5.00f, new Date()),
+                new Path("Tour du quartier", 4.30f, new Date()),
+                new Path("Chemin St-Charles", 1.00f, new Date()),
+                new Path("Chemin de l'avenir", 2.50f, new Date()),
+                new Path("Chemin chanceux", 5.54f, new Date())
+        };
+
+        PathAdapter adapter = new PathAdapter(getActivity(), R.layout.custom_list_item, paths);
+
+        ListView listView = (ListView) view.findViewById(R.id.path_list);
+        listView.setAdapter(adapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

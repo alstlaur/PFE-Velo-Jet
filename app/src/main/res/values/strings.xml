@@ -34,6 +34,7 @@
     <string name="hint_length">Longueur (KM)</string>
     <string name="hint_starting_address">Adresse de départ</string>
     <string name="hint_ending_address">Adresse de fin</string>
+    <string name="hint_search">Recherche Nom/Date/Distance</string>
 
     <!-- Activities titles -->
     <string name="title_activity_main">Capture de Trajet</string>
