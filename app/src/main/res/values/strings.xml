@@ -13,7 +13,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -36,11 +35,14 @@
     <string name="hint_starting_address">Adresse de départ</string>
     <string name="hint_ending_address">Adresse de fin</string>
 
+    <!-- Activities titles -->
+    <string name="title_activity_main">Capture de Trajet</string>
+    <string name="title_activity_history">Historique</string>
+    <string name="title_activity_generator">Générateur de Trajet</string>
+
     <!-- Menus Strings-->
     <string name="menu_capture">Trajet</string>
     <string name="menu_history">Historique</string>
     <string name="menu_generator">Générateur</string>
     <string name="menu_logout">Déconnexion</string>
-    <string name="title_activity_history">HistoryActivity</string>
-    <string name="title_activity_generator">GeneratorActivity</string>
 </resources>
