@@ -1,10 +1,12 @@
 package com.ets.astl.pfe_velo_jet.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,17 +16,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.adapter.PathAdapter;
+import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.ets.astl.pfe_velo_jet.entity.Path;
 import com.ets.astl.pfe_velo_jet.fragments.HistoryFragment;
+import com.ets.astl.pfe_velo_jet.fragments.HistoryItemFragment;
+import com.ets.astl.pfe_velo_jet.task.ProfileTask;
 
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class HistoryActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HistoryFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HistoryFragment.OnFragmentInteractionListener,
+            HistoryItemFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,27 @@ public class HistoryActivity extends AppCompatActivity
         historyFragment.setArguments(getIntent().getExtras());
         getFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, historyFragment).commit();
+
+        GlobalData globalData = (GlobalData) getApplicationContext();
+
+        View navView = navigationView.getHeaderView(0);
+        TextView name = (TextView) navView.findViewById(R.id.user_name);
+        name.setText(globalData.getAccount().getDisplayName());
+        TextView email = (TextView) navView.findViewById(R.id.user_email);
+        email.setText(globalData.getAccount().getEmail());
+        ImageView image = (ImageView) navView.findViewById(R.id.user_image);
+
+        if (globalData.getProfileImage() == null) {
+            try {
+                image.setImageDrawable(new ProfileTask(globalData).execute(globalData.getAccount().getPhotoUrl().toString()).get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            image.setImageDrawable(globalData.getProfileImage());
+        }
     }
 
     @Override

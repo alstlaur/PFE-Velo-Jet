@@ -10,7 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.CaptureActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:focusableInTouchMode="true">
 
     <fragment
         android:id="@+id/map"
@@ -92,7 +93,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/start_capture"
                 android:id="@+id/start_button"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:elevation="2dp"
+                android:layout_marginRight="5dp" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -100,7 +104,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/stop_capture"
                 android:id="@+id/pause_button"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:elevation="2dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
 
@@ -110,7 +117,10 @@
             android:layout_height="0dp"
             android:text="@string/save_capture"
             android:id="@+id/save_button"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:elevation="2dp"
+            android:layout_marginTop="5dp" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -13,11 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ets.astl.pfe_velo_jet.R;
+import com.ets.astl.pfe_velo_jet.entity.GlobalData;
+import com.ets.astl.pfe_velo_jet.task.ProfileTask;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+
+import java.util.concurrent.ExecutionException;
 
 public class GeneratorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -40,6 +46,27 @@ public class GeneratorActivity extends AppCompatActivity
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.generator_map);
         mapFragment.getMapAsync(this);
+
+        GlobalData globalData = (GlobalData) getApplicationContext();
+
+        View navView = navigationView.getHeaderView(0);
+        TextView name = (TextView) navView.findViewById(R.id.user_name);
+        name.setText(globalData.getAccount().getDisplayName());
+        TextView email = (TextView) navView.findViewById(R.id.user_email);
+        email.setText(globalData.getAccount().getEmail());
+        ImageView image = (ImageView) navView.findViewById(R.id.user_image);
+
+        if (globalData.getProfileImage() == null) {
+            try {
+                image.setImageDrawable(new ProfileTask(globalData).execute(globalData.getAccount().getPhotoUrl().toString()).get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            image.setImageDrawable(globalData.getProfileImage());
+        }
     }
 
     @Override

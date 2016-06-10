@@ -1,5 +1,6 @@
 package com.ets.astl.pfe_velo_jet.fragments;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ets.astl.pfe_velo_jet.R;
@@ -24,7 +26,7 @@ import java.util.List;
  * Use the {@link HistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -85,6 +87,7 @@ public class HistoryFragment extends Fragment {
 
         ListView listView = (ListView) view.findViewById(R.id.path_list);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
 
         return view;
     }
@@ -126,5 +129,26 @@ public class HistoryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // Create fragment and give it an argument specifying the article it should show
+        HistoryItemFragment newFragment = new HistoryItemFragment();
+        Bundle args = new Bundle();
+        //args.putInt("item", parent.getSelectedItem());
+        //newFragment.setArguments(args);
+
+        System.out.println("GOT IN");
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 }

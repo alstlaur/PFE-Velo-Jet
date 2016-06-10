@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ets.astl.pfe_velo_jet.R;
+import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,7 +22,8 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
-    private GoogleApiClient mGoogleApiClient;
+    static protected GoogleApiClient mGoogleApiClient;
+    private GlobalData globalData;
     private static final int RC_SIGN_IN = 9001;
 
     private static final String TAG = "LoginActivity";
@@ -30,6 +32,8 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        globalData = (GlobalData) getApplicationContext();
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -44,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        signIn();
+        //signIn();
     }
 
     @Override
@@ -67,8 +71,10 @@ public class LoginActivity extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
+            globalData.setAccount(acct);
+
             Intent startIntent = new Intent(this, CaptureActivity.class);
-            startIntent.putExtra("user", acct);
+            //startIntent.putExtra("user", acct);
             startActivity(startIntent);
         } else {
             // Signed out, show unauthenticated UI.
