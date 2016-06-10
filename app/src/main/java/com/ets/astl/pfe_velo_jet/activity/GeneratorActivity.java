@@ -96,7 +96,8 @@ public class GeneratorActivity extends AppCompatActivity
             //Current nav
             //Do nothing
         } else if (id == R.id.nav_logout) {
-            //logout the user and return to the login activity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

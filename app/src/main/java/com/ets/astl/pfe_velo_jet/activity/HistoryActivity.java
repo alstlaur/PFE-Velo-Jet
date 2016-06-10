@@ -115,7 +115,8 @@ public class HistoryActivity extends AppCompatActivity
             Intent intent = new Intent(this, GeneratorActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_logout) {
-            //logout the user and return to the login activity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

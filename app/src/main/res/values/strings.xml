@@ -47,5 +47,5 @@
     <string name="menu_generator">Générateur</string>
     <string name="menu_logout">Déconnexion</string>
 
-    <string name="help_text_login">Cliquer sur le boutton de connexion pour vous connecter avec un compte Google. Si vous n'avez pas de connection vous pouvez utiliser un compte temporaire.</string>
+    <string name="help_text_login">Cliquer sur le boutton de connexion pour vous connecter avec un compte Google. Si vous n\'avez pas de connection vous pouvez utiliser un compte temporaire.</string>
 </resources>
