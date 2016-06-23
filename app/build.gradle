@@ -20,6 +20,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
@@ -29,4 +33,5 @@ dependencies {
     //compile 'com.google.android.gms:google-services:9.0.2'
     compile 'com.google.android.gms:play-services-auth:9.0.2'
     compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.code.gson:gson:2.7'
 }
