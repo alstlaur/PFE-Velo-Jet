@@ -1,16 +1,12 @@
 package com.ets.astl.pfe_velo_jet.managers;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
-import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.ets.astl.pfe_velo_jet.entity.Path;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,27 +20,22 @@ import java.util.List;
 public class FileManager {
 
     private static FileManager Instance = null;
-    private List<Path> data = null;
+    private List<Path> data = new ArrayList<Path>();
     private Gson gson;
     private File current;
 
     private FileManager() {}
 
     private FileManager(Context context) {
-        //GsonBuilder gsonBuilder = new GsonBuilder(); USE THIS IF I NEED TO CONFIG THE GSON OBJECT
-        gson = new Gson(); //gsonBuilder.create();
+        gson = new Gson();
 
         try {
             current = new File(context.getFilesDir(), "velo-jet.json");
             JsonReader jsonReader = new JsonReader(new FileReader(current));
             Log.e("JSON", jsonReader.toString());
             data = gson.fromJson(jsonReader, new TypeToken<List<Path>>(){}.getType());
-            if (data == null) {
-                data = new ArrayList<Path>();
-            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            data = new ArrayList<Path>();
         }
     }
 
@@ -58,12 +49,8 @@ public class FileManager {
     public int savePath(Path path) {
         data.add(path);
         try {
-            /*FileWriter writer = new FileWriter(current);
-            writer.write(gson.toJson(data));*/
-
-            try (Writer writer = new FileWriter(current)) {
-                gson.toJson(data, writer);
-            }
+            Writer writer = new FileWriter(current);
+            gson.toJson(data, writer);
 
             return 0;
         } catch (IOException e) {
@@ -78,7 +65,7 @@ public class FileManager {
 
     public Path getPath(String name) {
         for (Path path: data) {
-            if (path.getName() == name) {
+            if (path.getName().equals(name)) {
                 return path;
             }
         }

@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.entity.Path;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class PathAdapter extends ArrayAdapter<Path>{
 
     private Context context;
@@ -47,9 +50,12 @@ public class PathAdapter extends ArrayAdapter<Path>{
         }
 
         Path path = data[position];
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM, yyyy", Locale.CANADA_FRENCH);
+
         holder.path_name.setText(path.getName());
-        holder.path_date.setText(path.getDate().toString());
-        holder.path_distance.setText(Float.toString(path.getDistance()));
+        holder.path_date.setText(formatter.format(path.getDate()));
+        holder.path_distance.setText(Float.toString(path.getDistance()) + " km");
 
         return row;
     }
