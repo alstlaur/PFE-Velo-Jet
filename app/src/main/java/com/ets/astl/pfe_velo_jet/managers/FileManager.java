@@ -1,8 +1,10 @@
 package com.ets.astl.pfe_velo_jet.managers;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.ets.astl.pfe_velo_jet.entity.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileManager {
@@ -24,67 +28,48 @@ public class FileManager {
     private Gson gson;
     private File current;
 
-    private FileManager() {
+    private FileManager() {}
+
+    private FileManager(Context context) {
         //GsonBuilder gsonBuilder = new GsonBuilder(); USE THIS IF I NEED TO CONFIG THE GSON OBJECT
         gson = new Gson(); //gsonBuilder.create();
 
-        if (isExternalStorageReadable()) {
-            try {
-                current = getPathStorageDir("user-paths");
-                JsonReader jsonReader = new JsonReader(new FileReader(current));
-                data = gson.fromJson(jsonReader, new TypeToken<List<Path>>(){}.getType());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        try {
+            current = new File(context.getFilesDir(), "velo-jet.json");
+            JsonReader jsonReader = new JsonReader(new FileReader(current));
+            Log.e("JSON", jsonReader.toString());
+            data = gson.fromJson(jsonReader, new TypeToken<List<Path>>(){}.getType());
+            if (data == null) {
+                data = new ArrayList<Path>();
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            data = new ArrayList<Path>();
         }
     }
 
-    public static FileManager getInstance() {
+    public static FileManager getInstance(Context context) {
         if (Instance == null) {
-            Instance = new FileManager();
+            Instance = new FileManager(context);
         }
         return Instance;
     }
 
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    public File getPathStorageDir(String pathName) {
-        // Get the directory for the user's public documents directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), pathName);
-        if (!file.mkdirs()) {
-            Log.e("Velo-Jet", "Directory not created");
-        }
-        return file;
-    }
-
-    public void savePath(Path path) {
+    public int savePath(Path path) {
         data.add(path);
-        if (isExternalStorageWritable()) {
-            try {
-                FileWriter writer = new FileWriter(current);
-                writer.write(gson.toJson(data));
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            /*FileWriter writer = new FileWriter(current);
+            writer.write(gson.toJson(data));*/
+
+            try (Writer writer = new FileWriter(current)) {
+                gson.toJson(data, writer);
             }
+
+            return 0;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return 1;
     }
 
     public List<Path> getPaths() {

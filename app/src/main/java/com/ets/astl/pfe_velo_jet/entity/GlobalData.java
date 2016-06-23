@@ -1,6 +1,7 @@
 package com.ets.astl.pfe_velo_jet.entity;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

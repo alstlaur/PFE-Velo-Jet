@@ -3,6 +3,7 @@ package com.ets.astl.pfe_velo_jet.activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,30 +13,29 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.entity.GlobalData;
+import com.ets.astl.pfe_velo_jet.entity.Path;
+import com.ets.astl.pfe_velo_jet.managers.FileManager;
 import com.ets.astl.pfe_velo_jet.task.ProfileTask;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class CaptureActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, View.OnClickListener {
+
+    private Path path = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +81,19 @@ public class CaptureActivity extends AppCompatActivity
         } else {
             image.setImageDrawable(globalData.getProfileImage());
         }
+
+        /****** TESTING PURPOSE ********/
+        path = new Path();
+        path.setName("Bob Gainer");
+        path.setDistance(5.50f);
+        path.setDate(new Date());
+        /*******************************/
+
+        View app_bar = findViewById(R.id.main_f_include);
+        View content = app_bar.findViewById(R.id.main_s_include);
+        Button button = (Button) content.findViewById(R.id.save_button);
+        button.setOnClickListener(this);
+
     }
 
     @Override
@@ -124,5 +137,18 @@ public class CaptureActivity extends AppCompatActivity
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.save_button:
+                if (path != null) {
+                    if (FileManager.getInstance(this).savePath(path) == 0) {
+                        Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
     }
 }

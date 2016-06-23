@@ -21,7 +21,7 @@ public class ExampleUnitTest {
 
     @Test
     public void readFile() throws Exception {
-        FileManager manager = FileManager.getInstance();
+        /*FileManager manager = FileManager.getInstance();
 
         Path path = new Path();
         path.setName("Bob");
@@ -32,6 +32,6 @@ public class ExampleUnitTest {
 
         manager.savePath(path);
 
-        System.out.println(manager.getPaths().toString());
+        System.out.println(manager.getPaths().toString());*/
     }
 }

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.adapter.PathAdapter;
 import com.ets.astl.pfe_velo_jet.entity.Path;
+import com.ets.astl.pfe_velo_jet.managers.FileManager;
 
 import java.util.Date;
 import java.util.List;
@@ -29,12 +30,12 @@ import java.util.List;
 public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    /*private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private String mParam2;*/
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,20 +54,20 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
     // TODO: Rename and change types and number of parameters
     public static HistoryFragment newInstance(String param1, String param2) {
         HistoryFragment fragment = new HistoryFragment();
-        Bundle args = new Bundle();
+        /*Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        }*/
     }
 
     @Override
@@ -74,6 +75,8 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        List<Path> get_paths = FileManager.getInstance(getActivity()).getPaths();
 
         Path paths[] = new Path[] {
                 new Path("Chemin Best Buy", 5.00f, new Date()),
@@ -83,7 +86,7 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
                 new Path("Chemin chanceux", 5.54f, new Date())
         };
 
-        PathAdapter adapter = new PathAdapter(getActivity(), R.layout.custom_list_item, paths);
+        PathAdapter adapter = new PathAdapter(getActivity(), R.layout.custom_list_item, get_paths.toArray(new Path[get_paths.size()]));
 
         ListView listView = (ListView) view.findViewById(R.id.path_list);
         listView.setAdapter(adapter);
