@@ -27,14 +27,18 @@ import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.ets.astl.pfe_velo_jet.entity.Path;
 import com.ets.astl.pfe_velo_jet.fragments.HistoryFragment;
 import com.ets.astl.pfe_velo_jet.fragments.HistoryItemFragment;
+import com.ets.astl.pfe_velo_jet.managers.FileManager;
 import com.ets.astl.pfe_velo_jet.task.ProfileTask;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class HistoryActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HistoryFragment.OnFragmentInteractionListener,
-            HistoryItemFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        AdapterView.OnItemClickListener {
+
+    private List<Path> paths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +65,18 @@ public class HistoryActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Add the fragment in the activity
-        HistoryFragment historyFragment = new HistoryFragment();
+        /*HistoryFragment historyFragment = new HistoryFragment();
         historyFragment.setArguments(getIntent().getExtras());
         getFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, historyFragment).commit();
+                .add(R.id.fragment_container, historyFragment).commit();*/
+
+        paths = FileManager.getInstance(this).getPaths();
+
+        PathAdapter adapter = new PathAdapter(this, R.layout.custom_list_item, paths.toArray(new Path[paths.size()]));
+
+        ListView listView = (ListView) findViewById(R.id.path_list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
 
         GlobalData globalData = (GlobalData) getApplicationContext();
 
@@ -125,7 +137,10 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, HistoryItemActivity.class);
+        intent.putExtra("path_id", position);
 
+        startActivity(intent);
     }
 }

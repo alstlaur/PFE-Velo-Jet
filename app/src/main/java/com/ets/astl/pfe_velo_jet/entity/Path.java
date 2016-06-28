@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class Path {
 
+    private int id;
     private String name;
     private float distance;
     private Date date;
@@ -20,6 +21,14 @@ public class Path {
         this.speed = 0.0f;
         this.date = new Date();
         this.points = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

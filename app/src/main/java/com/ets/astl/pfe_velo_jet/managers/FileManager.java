@@ -49,6 +49,7 @@ public class FileManager {
         if (data == null) {
             data = new ArrayList<>();
         }
+        path.setId(data.size());
         data.add(path);
 
         try {
@@ -67,12 +68,7 @@ public class FileManager {
         return data;
     }
 
-    public Path getPath(String name) {
-        for (Path path: data) {
-            if (path.getName().equals(name)) {
-                return path;
-            }
-        }
-        return null;
+    public Path getPath(int id) {
+        return data.get(id);
     }
 }
