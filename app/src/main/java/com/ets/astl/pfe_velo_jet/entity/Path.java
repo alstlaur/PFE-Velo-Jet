@@ -1,5 +1,8 @@
 package com.ets.astl.pfe_velo_jet.entity;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Path {
@@ -8,8 +11,10 @@ public class Path {
     private float distance;
     private Date date;
 
-    public Path() {
+    private ArrayList<LatLng> points;
 
+    public Path() {
+        this.points = new ArrayList<>();
     }
 
     public Path(String name, float distance, Date date) {
@@ -40,5 +45,9 @@ public class Path {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public ArrayList<LatLng> getPoints() {
+        return points;
     }
 }

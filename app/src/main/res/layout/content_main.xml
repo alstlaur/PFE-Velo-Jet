@@ -107,8 +107,7 @@
                 android:layout_weight="1"
                 android:elevation="2dp"
                 android:background="@color/colorPrimary"
-                android:layout_marginLeft="5dp"
-                android:onClick="save_click"/>
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
 
