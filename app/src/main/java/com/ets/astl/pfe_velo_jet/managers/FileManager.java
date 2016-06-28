@@ -20,7 +20,7 @@ import java.util.List;
 public class FileManager {
 
     private static FileManager Instance = null;
-    private List<Path> data = new ArrayList<Path>();
+    private List<Path> data = new ArrayList<>();
     private Gson gson;
     private File current;
 
@@ -32,7 +32,6 @@ public class FileManager {
         try {
             current = new File(context.getFilesDir(), "velo-jet.json");
             JsonReader jsonReader = new JsonReader(new FileReader(current));
-            Log.e("JSON", jsonReader.toString());
             data = gson.fromJson(jsonReader, new TypeToken<List<Path>>(){}.getType());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -47,10 +46,16 @@ public class FileManager {
     }
 
     public int savePath(Path path) {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
         data.add(path);
+
         try {
             Writer writer = new FileWriter(current);
             gson.toJson(data, writer);
+            //writer.flush();
+            writer.close();
 
             return 0;
         } catch (IOException e) {

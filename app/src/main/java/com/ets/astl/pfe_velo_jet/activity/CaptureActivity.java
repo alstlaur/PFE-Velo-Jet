@@ -51,9 +51,10 @@ public class CaptureActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private Button bStart, bStop, bSave;
+
     private Path path = null;
 
-    //private MapFragment mapFragment;
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
@@ -114,11 +115,12 @@ public class CaptureActivity extends AppCompatActivity
 
         View app_bar = findViewById(R.id.main_f_include);
         View content = app_bar.findViewById(R.id.main_s_include);
-        Button bStart = (Button) content.findViewById(R.id.start_button);
+        bStart = (Button) content.findViewById(R.id.start_button);
+        bStop = (Button) content.findViewById(R.id.pause_button);
+        bSave = (Button) content.findViewById(R.id.save_button);
+
         bStart.setOnClickListener(this);
-        Button bStop = (Button) content.findViewById(R.id.pause_button);
         bStop.setOnClickListener(this);
-        Button bSave = (Button) content.findViewById(R.id.save_button);
         bSave.setOnClickListener(this);
 
         // Create an instance of GoogleAPIClient.
@@ -224,11 +226,7 @@ public class CaptureActivity extends AppCompatActivity
                 stopCapture();
                 break;
             case R.id.save_button:
-                if (path != null) {
-                    if (FileManager.getInstance(this).savePath(path) == 0) {
-                        Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                saveCapture();
                 break;
         }
     }
@@ -306,20 +304,40 @@ public class CaptureActivity extends AppCompatActivity
     /**** BUTTONS LISTENERS ****/
 
     private void startCapture() {
-        Log.i("Bob Gainer", "Start capture");
+        Log.i("Velo-Jet", "Start capture");
 
         if (path == null) {
             path = new Path();
         }
 
         startLocationUpdates();
+
+        bStart.setEnabled(false);
+        bStop.setEnabled(true);
+        bSave.setEnabled(false);
     }
 
     private void stopCapture() {
+        Log.i("Velo-Jet", "Stop capture");
+
         stopLocationUpdates();
+
+        bStart.setEnabled(true);
+        bStop.setEnabled(false);
+        bSave.setEnabled(true);
     }
 
     private void saveCapture() {
+        Log.i("Velo-Jet", "Save capture");
 
+        if (path != null) {
+            if (FileManager.getInstance(this).savePath(path) == 0) {
+                Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        bStart.setEnabled(true);
+        bStop.setEnabled(false);
+        bSave.setEnabled(false);
     }
 }
