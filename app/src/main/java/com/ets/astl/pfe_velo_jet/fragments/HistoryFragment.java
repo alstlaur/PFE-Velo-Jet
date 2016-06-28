@@ -28,14 +28,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class HistoryFragment extends Fragment implements AdapterView.OnItemClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    /*private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;*/
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,17 +68,17 @@ public class HistoryFragment extends Fragment implements AdapterView.OnItemClick
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        List<Path> get_paths = FileManager.getInstance(getActivity()).getPaths();
+        List<Path> paths = FileManager.getInstance(getActivity()).getPaths();
 
-        Path paths[] = new Path[] {
+        /*Path paths[] = new Path[] {
                 new Path("Chemin Best Buy", 5.00f, new Date()),
                 new Path("Tour du quartier", 4.30f, new Date()),
                 new Path("Chemin St-Charles", 1.00f, new Date()),
                 new Path("Chemin de l'avenir", 2.50f, new Date()),
                 new Path("Chemin chanceux", 5.54f, new Date())
-        };
+        };*/
 
-        PathAdapter adapter = new PathAdapter(getActivity(), R.layout.custom_list_item, get_paths.toArray(new Path[get_paths.size()]));
+        PathAdapter adapter = new PathAdapter(getActivity(), R.layout.custom_list_item, paths.toArray(new Path[paths.size()]));
 
         ListView listView = (ListView) view.findViewById(R.id.path_list);
         listView.setAdapter(adapter);

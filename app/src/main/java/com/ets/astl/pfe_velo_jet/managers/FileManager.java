@@ -54,7 +54,6 @@ public class FileManager {
         try {
             Writer writer = new FileWriter(current);
             gson.toJson(data, writer);
-            //writer.flush();
             writer.close();
 
             return 0;

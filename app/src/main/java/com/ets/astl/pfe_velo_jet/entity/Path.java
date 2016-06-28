@@ -10,17 +10,16 @@ public class Path {
     private String name;
     private float distance;
     private Date date;
+    private float speed;
 
     private ArrayList<LatLng> points;
 
     public Path() {
+        this.name = "Nouveau parcour";
+        this.distance = 0.0f;
+        this.speed = 0.0f;
+        this.date = new Date();
         this.points = new ArrayList<>();
-    }
-
-    public Path(String name, float distance, Date date) {
-        this.name = name;
-        this.distance = distance;
-        this.date = date;
     }
 
     public String getName() {
@@ -37,6 +36,14 @@ public class Path {
 
     public void setDistance(float distance) {
         this.distance = distance;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public Date getDate() {
