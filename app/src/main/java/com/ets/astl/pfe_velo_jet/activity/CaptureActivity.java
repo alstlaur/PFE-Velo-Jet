@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class CaptureActivity extends AppCompatActivity
@@ -52,6 +55,8 @@ public class CaptureActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private Button bStart, bStop, bSave;
+    private Chronometer chrono;
+    private TextView tDistance, tSpeed;
 
     private Path path = null;
 
@@ -60,6 +65,8 @@ public class CaptureActivity extends AppCompatActivity
     private Location currentLocation;
     private LocationRequest locationRequest;
     private Polyline polyline;
+
+    private long timeWhenStopped = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +122,7 @@ public class CaptureActivity extends AppCompatActivity
 
         View app_bar = findViewById(R.id.main_f_include);
         View content = app_bar.findViewById(R.id.main_s_include);
+
         bStart = (Button) content.findViewById(R.id.start_button);
         bStop = (Button) content.findViewById(R.id.pause_button);
         bSave = (Button) content.findViewById(R.id.save_button);
@@ -122,6 +130,10 @@ public class CaptureActivity extends AppCompatActivity
         bStart.setOnClickListener(this);
         bStop.setOnClickListener(this);
         bSave.setOnClickListener(this);
+
+        chrono = (Chronometer) content.findViewById(R.id.chronometer);
+        tDistance = (TextView) content.findViewById(R.id.distance_label);
+        tSpeed = (TextView) content.findViewById(R.id.speed_label);
 
         // Create an instance of GoogleAPIClient.
         if (googleApiClient == null) {
@@ -252,7 +264,7 @@ public class CaptureActivity extends AppCompatActivity
             polyline = googleMap.addPolyline(rectOptions);
 
             //move the camera to current location and zoom to building view
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
             //create LocationRequest for future location calls
             createLocationRequest();
@@ -299,6 +311,12 @@ public class CaptureActivity extends AppCompatActivity
 
         path.getPoints().add(new LatLng(location.getLatitude(), location.getLongitude()));
         polyline.setPoints(path.getPoints());
+
+        String speed = String.format(Locale.CANADA_FRENCH,"%.2f",location.getSpeed()) + " m/s";
+        String distance = String.format(Locale.CANADA_FRENCH,"%.2f",5.000001f) + " km";
+
+        tSpeed.setText(speed);
+        tDistance.setText(distance);
     }
 
     /**** BUTTONS LISTENERS ****/
@@ -312,6 +330,9 @@ public class CaptureActivity extends AppCompatActivity
 
         startLocationUpdates();
 
+        chrono.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+        chrono.start();
+
         bStart.setEnabled(false);
         bStop.setEnabled(true);
         bSave.setEnabled(false);
@@ -321,6 +342,9 @@ public class CaptureActivity extends AppCompatActivity
         Log.i("Velo-Jet", "Stop capture");
 
         stopLocationUpdates();
+
+        timeWhenStopped = chrono.getBase() - SystemClock.elapsedRealtime();
+        chrono.stop();
 
         bStart.setEnabled(true);
         bStop.setEnabled(false);

@@ -38,8 +38,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Distance : 100 km"
                 android:id="@+id/distance_label"
-                android:layout_weight="1"
-                android:phoneNumber="false" />
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -55,13 +54,12 @@
             android:layout_height="match_parent"
             android:weightSum="2">
 
-            <TextView
-                android:layout_width="match_parent"
+            <Chronometer
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Chrono : 00:00:00"
-                android:id="@+id/time_label"
-                android:layout_weight="1" />
+                android:id="@+id/chronometer"
+                android:format="Chrono: 00:%s"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:layout_width="match_parent"
