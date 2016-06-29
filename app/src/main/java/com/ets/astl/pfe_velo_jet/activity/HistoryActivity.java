@@ -25,8 +25,6 @@ import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.adapter.PathAdapter;
 import com.ets.astl.pfe_velo_jet.entity.GlobalData;
 import com.ets.astl.pfe_velo_jet.entity.Path;
-import com.ets.astl.pfe_velo_jet.fragments.HistoryFragment;
-import com.ets.astl.pfe_velo_jet.fragments.HistoryItemFragment;
 import com.ets.astl.pfe_velo_jet.managers.FileManager;
 import com.ets.astl.pfe_velo_jet.task.ProfileTask;
 
