@@ -11,7 +11,8 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.CaptureActivity"
     tools:showIn="@layout/app_bar_main"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:clipToPadding="false" >
 
     <fragment
         android:id="@+id/map"
@@ -19,56 +20,94 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/labels_table" />
+        android:layout_above="@+id/linLayout" />
 
-    <TableLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/labels_table"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:weightSum="3"
+        android:id="@+id/linLayout"
+        android:layout_marginBottom="10dp"
+        android:elevation="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/background_material_light"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:layout_above="@+id/linearLayout">
 
-        <TableRow
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="2">
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Distance : 100 km"
+                android:text="Distance (km)"
+                android:id="@+id/textView2"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="0.00"
                 android:id="@+id/distance_label"
-                android:layout_weight="1" />
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Vitesse : 20 km/h"
-                android:id="@+id/speed_label"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="2">
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Vitesse (km/h)"
+                android:id="@+id/textView4"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="00"
+                android:id="@+id/speed_label"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Temps"
+                android:id="@+id/textView7"
+                android:layout_gravity="center_horizontal" />
 
             <Chronometer
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/chronometer"
-                android:format="Chrono: 00:%s"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:format="%s"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_gravity="center_horizontal" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView5"
-                android:layout_weight="1" />
-        </TableRow>
-    </TableLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -92,7 +131,7 @@
                 android:text="@string/start_capture"
                 android:id="@+id/start_button"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/raised_button_primary"
                 android:elevation="2dp"
                 android:layout_marginRight="5dp" />
 
@@ -104,7 +143,7 @@
                 android:id="@+id/pause_button"
                 android:layout_weight="1"
                 android:elevation="2dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/raised_button_primary"
                 android:layout_marginLeft="5dp"
                 android:enabled="false" />
 
@@ -117,7 +156,7 @@
             android:text="@string/save_capture"
             android:id="@+id/save_button"
             android:layout_weight="1"
-            android:background="@color/colorAccent"
+            android:background="@drawable/raised_button_accent"
             android:elevation="2dp"
             android:layout_marginTop="5dp"
             android:enabled="false" />
