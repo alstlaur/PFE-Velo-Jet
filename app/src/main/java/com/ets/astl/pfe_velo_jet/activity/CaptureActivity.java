@@ -69,11 +69,12 @@ public class CaptureActivity extends AppCompatActivity
 
     private Path path = null;
 
-    private GoogleMap googleMap;
+    private GoogleMap googleMap = null;
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
     private LocationRequest locationRequest;
     private Polyline polyline;
+    private MapFragment mapFragment;
 
     private long timeWhenStopped = 0;
     private long nbCaptures = 0;
@@ -102,7 +103,7 @@ public class CaptureActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         GlobalData globalData = (GlobalData) getApplicationContext();
@@ -141,28 +142,19 @@ public class CaptureActivity extends AppCompatActivity
         tDistance = (TextView) content.findViewById(R.id.distance_label);
         tSpeed = (TextView) content.findViewById(R.id.speed_label);
 
-        // Create an instance of GoogleAPIClient.
-        if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
     }
 
     @Override
     protected void onStart() {
-        googleApiClient.connect();
+        //googleApiClient.connect();
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        if (!googleApiClient.isConnected()) {
+        if (googleApiClient != null && !googleApiClient.isConnected()) {
             googleApiClient.connect();
         }
         super.onResume();
@@ -224,11 +216,23 @@ public class CaptureActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            this.googleMap = googleMap;
+            this.googleMap.setMyLocationEnabled(true);
+
+            // Create an instance of GoogleAPIClient.
+            if (googleApiClient == null) {
+                googleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
+            }
+
+            googleApiClient.connect();
+        } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 305);
         }
-        googleMap.setMyLocationEnabled(true);
-        this.googleMap = googleMap;
     }
 
     @Override
@@ -239,16 +243,26 @@ public class CaptureActivity extends AppCompatActivity
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
+                    mapFragment.getMapAsync(this);
+                    bStart.setEnabled(true);
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    bStart.setEnabled(false);
+                    bStop.setEnabled(false);
+                    bSave.setEnabled(false);
                 }
-                return;
+                break;
+            }
+            case 306: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onConnected(null);
+                    bStart.setEnabled(true);
+                } else {
+                    bStart.setEnabled(false);
+                    bStop.setEnabled(false);
+                    bSave.setEnabled(false);
+                }
+                break;
             }
 
             // other 'case' lines to check for other
@@ -275,27 +289,27 @@ public class CaptureActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
         //First call to get position
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 305);
-        }
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 306);
+        } else {
+            if (currentLocation == null) {
+                currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        googleApiClient);
 
-        if (currentLocation == null) {
-            currentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    googleApiClient);
+                LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                // Instantiates a new Polyline object and adds points to define a rectangle
+                PolylineOptions rectOptions = new PolylineOptions()
+                        .color(Color.BLUE);
 
-            // Instantiates a new Polyline object and adds points to define a rectangle
-            PolylineOptions rectOptions = new PolylineOptions()
-                    .color(Color.BLUE);
+                // Get back the mutable Polyline
+                polyline = googleMap.addPolyline(rectOptions);
 
-            // Get back the mutable Polyline
-            polyline = googleMap.addPolyline(rectOptions);
+                //move the camera to current location and zoom to building view
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
 
-            //move the camera to current location and zoom to building view
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-
-            //create LocationRequest for future location calls
-            createLocationRequest();
+                //create LocationRequest for future location calls
+                createLocationRequest();
+            }
         }
     }
 
@@ -318,11 +332,11 @@ public class CaptureActivity extends AppCompatActivity
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 305);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 307);
+        } else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    googleApiClient, locationRequest, this);
         }
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
     }
 
     protected void stopLocationUpdates() {
@@ -343,6 +357,8 @@ public class CaptureActivity extends AppCompatActivity
         tDistance.setText(distance);
 
         currentLocation = location;
+
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18));
     }
 
     private float calculateSpeed(float speed) {
@@ -420,6 +436,8 @@ public class CaptureActivity extends AppCompatActivity
                             bStart.setEnabled(true);
                             bStop.setEnabled(false);
                             bSave.setEnabled(false);
+
+                            resetUI();
                         }
                     })
                     .setNegativeButton("Cancel",
@@ -441,17 +459,39 @@ public class CaptureActivity extends AppCompatActivity
     }
 
     private String convertTime() {
-        String result = "";
+        String result;
 
         long base = timeWhenStopped * -1;
         long hours, minutes, seconds;
 
         hours = TimeUnit.MILLISECONDS.toHours(base);
         minutes = TimeUnit.MILLISECONDS.toMinutes(base) % 60;
-        seconds = TimeUnit.MILLISECONDS.toSeconds(base) % (60 * 60);
+        seconds = TimeUnit.MILLISECONDS.toSeconds(base) % 60;
 
         result = String.format(Locale.CANADA_FRENCH, "%02d:%02d:%02d", hours, minutes, seconds);
 
         return result;
+    }
+
+    private void resetUI() {
+        path = new Path();
+
+        timeWhenStopped = 0;
+
+        chrono.setText("00:00");
+        tDistance.setText("0,00");
+        tSpeed.setText("0,00");
+
+        polyline.setPoints(path.getPoints());
+        nbCaptures = 0;
+
+        currentLocation = null;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 308);
+        } else {
+            currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    googleApiClient);
+        }
     }
 }
