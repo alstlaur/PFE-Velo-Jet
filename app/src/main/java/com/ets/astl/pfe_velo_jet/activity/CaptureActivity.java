@@ -57,6 +57,7 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class CaptureActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, View.OnClickListener,
@@ -124,13 +125,6 @@ public class CaptureActivity extends AppCompatActivity
         } else {
             image.setImageDrawable(globalData.getProfileImage());
         }
-
-        /****** TESTING PURPOSE ********/
-        path = new Path();
-        path.setName("Bob Gainer");
-        path.setDistance(5.50f);
-        path.setDate(new Date());
-        /*******************************/
 
         View app_bar = findViewById(R.id.main_f_include);
         View content = app_bar.findViewById(R.id.main_s_include);
@@ -404,8 +398,8 @@ public class CaptureActivity extends AppCompatActivity
         Log.i("Velo-Jet", "Save capture");
 
         if (path != null) {
-            Time time = new Time(timeWhenStopped);
-            path.setTime(time.toString());
+
+            path.setTime(convertTime());
 
             LayoutInflater li = LayoutInflater.from(this);
             View input = li.inflate(R.layout.input_box, null);
@@ -420,19 +414,44 @@ public class CaptureActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             path.setName(eInput.getText().toString());
+
+                            saveJson();
+
+                            bStart.setEnabled(true);
+                            bStop.setEnabled(false);
+                            bSave.setEnabled(false);
                         }
-                    });
+                    })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
 
             AlertDialog dialog = alert.create();
             dialog.show();
-
-            if (FileManager.getInstance(this).savePath(path) == 0) {
-                Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
-            }
         }
+    }
 
-        bStart.setEnabled(true);
-        bStop.setEnabled(false);
-        bSave.setEnabled(false);
+    private void saveJson() {
+        if (FileManager.getInstance(this).savePath(path) == 0) {
+            Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String convertTime() {
+        String result = "";
+
+        long base = timeWhenStopped * -1;
+        long hours, minutes, seconds;
+
+        hours = TimeUnit.MILLISECONDS.toHours(base);
+        minutes = TimeUnit.MILLISECONDS.toMinutes(base) % 60;
+        seconds = TimeUnit.MILLISECONDS.toSeconds(base) % (60 * 60);
+
+        result = String.format(Locale.CANADA_FRENCH, "%02d:%02d:%02d", hours, minutes, seconds);
+
+        return result;
     }
 }
