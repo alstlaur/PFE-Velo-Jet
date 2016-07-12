@@ -55,7 +55,7 @@ public class PathAdapter extends ArrayAdapter<Path>{
 
         holder.path_name.setText(path.getName());
         holder.path_date.setText(formatter.format(path.getDate()));
-        holder.path_distance.setText(Float.toString(path.getDistance()) + " km");
+        holder.path_distance.setText(String.format(Locale.CANADA_FRENCH,"%.2f", path.getDistance() / 1000.0f) + " km");
 
         return row;
     }

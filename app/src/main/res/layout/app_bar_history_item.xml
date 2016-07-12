@@ -21,6 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_history_item" />
+    <include layout="@layout/content_history_item"
+        android:id="@+id/hi_content_include"/>
 
 </android.support.design.widget.CoordinatorLayout>

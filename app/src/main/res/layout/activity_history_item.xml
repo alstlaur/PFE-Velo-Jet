@@ -11,7 +11,8 @@
     <include
         layout="@layout/app_bar_history_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/hi_app_bar_include"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

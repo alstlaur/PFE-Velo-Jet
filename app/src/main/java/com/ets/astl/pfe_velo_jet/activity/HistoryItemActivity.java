@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.ets.astl.pfe_velo_jet.R;
 import com.ets.astl.pfe_velo_jet.entity.Path;
@@ -21,10 +23,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.Locale;
+
 public class HistoryItemActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private Path path;
+
+    private TextView tvDistance, tvSpeed, tvTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,17 @@ public class HistoryItemActivity extends AppCompatActivity
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.item_map);
         mapFragment.getMapAsync(this);
+
+        View app_bar = findViewById(R.id.hi_app_bar_include);
+        View content = app_bar.findViewById(R.id.hi_content_include);
+
+        tvDistance = (TextView) content.findViewById(R.id.hi_distance);
+        tvSpeed = (TextView) content.findViewById(R.id.hi_speed);
+        tvTime = (TextView) content.findViewById(R.id.hi_time);
+
+        tvDistance.setText(String.format(Locale.CANADA_FRENCH,"%.2f", path.getDistance() / 1000.0f));
+        tvSpeed.setText(String.format(Locale.CANADA_FRENCH,"%.2f", path.getSpeed() * 3600.0f / 1000.0f));
+        tvTime.setText(path.getTime());
     }
 
     @Override

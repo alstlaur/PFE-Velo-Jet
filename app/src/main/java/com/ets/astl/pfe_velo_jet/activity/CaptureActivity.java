@@ -1,12 +1,16 @@
 package com.ets.astl.pfe_velo_jet.activity;
 
 import android.Manifest;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,13 +19,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +53,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -67,6 +75,10 @@ public class CaptureActivity extends AppCompatActivity
     private Polyline polyline;
 
     private long timeWhenStopped = 0;
+    private long nbCaptures = 0;
+
+    private PowerManager pm;
+    private PowerManager.WakeLock wl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +156,8 @@ public class CaptureActivity extends AppCompatActivity
                     .build();
         }
 
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
     }
 
     @Override
@@ -153,9 +167,29 @@ public class CaptureActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        if (!googleApiClient.isConnected()) {
+            googleApiClient.connect();
+        }
+        super.onResume();
+    }
+
+    @Override
     protected void onStop() {
-        googleApiClient.disconnect();
+        if (!wl.isHeld()) {
+            googleApiClient.disconnect();
+        }
+        Log.i("Velo-Jet", "connection stopped");
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        googleApiClient.disconnect();
+        if (wl.isHeld()) {
+            wl.release();
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -264,7 +298,7 @@ public class CaptureActivity extends AppCompatActivity
             polyline = googleMap.addPolyline(rectOptions);
 
             //move the camera to current location and zoom to building view
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
 
             //create LocationRequest for future location calls
             createLocationRequest();
@@ -273,29 +307,26 @@ public class CaptureActivity extends AppCompatActivity
 
     protected void createLocationRequest() {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(5 * 1000);
+        locationRequest.setFastestInterval(5 * 1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i("Velo-Jet", "suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    private void calcStats() {
-
+        Log.i("Velo-Jet", "failed");
     }
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 305);
         }
+
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
     }
@@ -307,16 +338,29 @@ public class CaptureActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        currentLocation = location;
-
         path.getPoints().add(new LatLng(location.getLatitude(), location.getLongitude()));
         polyline.setPoints(path.getPoints());
+        nbCaptures++;
 
-        String speed = String.format(Locale.CANADA_FRENCH,"%.2f",location.getSpeed()) + " m/s";
-        String distance = String.format(Locale.CANADA_FRENCH,"%.2f",5.000001f) + " km";
+        String speed = String.format(Locale.CANADA_FRENCH,"%.2f",calculateSpeed(location.getSpeed()));
+        String distance = String.format(Locale.CANADA_FRENCH,"%.2f",calculateDistance(currentLocation.distanceTo(location)));
 
         tSpeed.setText(speed);
         tDistance.setText(distance);
+
+        currentLocation = location;
+    }
+
+    private float calculateSpeed(float speed) {
+        path.setSpeed((path.getSpeed() * (nbCaptures - 1)  + speed) / nbCaptures);
+
+        return path.getSpeed() * (3600.0f / 1000.0f);
+    }
+
+    private float calculateDistance(float distance) {
+        path.setDistance(path.getDistance() + distance);
+
+        return path.getDistance() / 1000.0f;
     }
 
     /**** BUTTONS LISTENERS ****/
@@ -326,6 +370,7 @@ public class CaptureActivity extends AppCompatActivity
 
         if (path == null) {
             path = new Path();
+            path.setDate(new Date());
         }
 
         startLocationUpdates();
@@ -336,6 +381,8 @@ public class CaptureActivity extends AppCompatActivity
         bStart.setEnabled(false);
         bStop.setEnabled(true);
         bSave.setEnabled(false);
+
+        wl.acquire();
     }
 
     private void stopCapture() {
@@ -349,12 +396,36 @@ public class CaptureActivity extends AppCompatActivity
         bStart.setEnabled(true);
         bStop.setEnabled(false);
         bSave.setEnabled(true);
+
+        wl.release();
     }
 
     private void saveCapture() {
         Log.i("Velo-Jet", "Save capture");
 
         if (path != null) {
+            Time time = new Time(timeWhenStopped);
+            path.setTime(time.toString());
+
+            LayoutInflater li = LayoutInflater.from(this);
+            View input = li.inflate(R.layout.input_box, null);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setView(input);
+
+            final EditText eInput = (EditText) input.findViewById(R.id.nameInput);
+
+            alert.setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            path.setName(eInput.getText().toString());
+                        }
+                    });
+
+            AlertDialog dialog = alert.create();
+            dialog.show();
+
             if (FileManager.getInstance(this).savePath(path) == 0) {
                 Toast.makeText(getApplicationContext(), "La sauvegarde a réussie.", Toast.LENGTH_SHORT).show();
             }

@@ -2,6 +2,7 @@ package com.ets.astl.pfe_velo_jet.entity;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,15 +13,17 @@ public class Path {
     private float distance;
     private Date date;
     private float speed;
+    private String time;
 
     private ArrayList<LatLng> points;
 
     public Path() {
-        this.name = "Nouveau parcour";
+        this.name = "Nouveau parcours";
         this.distance = 0.0f;
         this.speed = 0.0f;
         this.date = new Date();
         this.points = new ArrayList<>();
+        this.time = "00:00";
     }
 
     public int getId() {
@@ -65,5 +68,13 @@ public class Path {
 
     public ArrayList<LatLng> getPoints() {
         return points;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
